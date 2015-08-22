@@ -68,4 +68,14 @@ public class Player {
         this.inHand.add(new ArrayList());
     }
     
+    public String toString()
+    {
+        return "Name: " + this.name + "\nChips: " + this.chip + "\nWin: " + this.win
+                + "\nLose: " + this.lose + "\nPush: " + this.push;
+    }
+    
+    public String getName()
+    {
+        return this.name;
+    }
 }

@@ -30,11 +30,12 @@ import java.util.*;
  * @author Chad
  */
 public class Card {
-    private static final String[] suit = {"Spade", "Heart", "Club", "Diamond"};
-    private static final String[] rank = {"Two", "Three", "Four", "Five", "Six",
+    private static final int NUM_OF_SET = 4;
+    private static final String[] SUIT = {"Spade", "Heart", "Club", "Diamond"};
+    private static final String[] RANK = {"Two", "Three", "Four", "Five", "Six",
         "Seven", "Eight", "Nine", "Ten", "Jack", "Queen", "King", "Ace"};
-    public static final HashMap power = new HashMap();
-    private static final String[] card = new String[52];
+    public static HashMap power = new HashMap();
+    private static String[] card = new String[52*Card.NUM_OF_SET];
     private static int cardNow;
     
     static
@@ -43,23 +44,26 @@ public class Card {
         {
             if (i < 8)
             {
-                Card.power.put(Card.rank[i], i+2);
+                Card.power.put(Card.RANK[i], i+2);
             }
             else if (i == 12)
             {
-                Card.power.put(Card.rank[i], 11);
+                Card.power.put(Card.RANK[i], 11);
             }
             else
             {
-                Card.power.put(Card.rank[i], 10);
+                Card.power.put(Card.RANK[i], 10);
             }
         }
         
-        for (int i = 0; i < 4; i++)
+        for (int i = 0; i < Card.NUM_OF_SET; i++)
         {
-            for (int j = 0; j < 13; j++)
+            for (int j = 0; j < 4; j++)
             {
-                Card.card[i*13+j] = "The " + Card.rank[j] + " of " + Card.suit[i];
+                for (int k = 0; k < 13; k++)
+                {
+                    Card.card[i*52+j*13+k] = "The " + Card.RANK[k] + " of " + Card.SUIT[j];
+                }
             }
         }
         
@@ -72,9 +76,9 @@ public class Card {
         Random rand = new Random();
         String temp;
         
-        for (int i = 0; i < 52; i++)
+        for (int i = 0; i < 52*Card.NUM_OF_SET; i++)
         {
-            r = rand.nextInt(52);
+            r = rand.nextInt(52*Card.NUM_OF_SET);
             temp = Card.card[i];
             Card.card[i] = Card.card[r];
             Card.card[r] = temp;

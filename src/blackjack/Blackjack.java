@@ -34,7 +34,7 @@ public class Blackjack {
      */
     public static void main(String[] args) {
         Card.shuffleCards();
-        for (int i = 0; i < 52; i++)
+        for (int i = 0; i < 52*4; i++)
         {
             System.out.print(Card.getCard(i) + " ");
             System.out.println(Card.getValue(i));
