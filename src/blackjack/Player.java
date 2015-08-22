@@ -23,10 +23,49 @@
  */
 package blackjack;
 
+import java.util.*;
+
 /**
  *
  * @author Chad
  */
-public class Hand {
+public class Player {
+    private String name;
+    private int chip;
+    private int win;
+    private int lose;
+    private int push;
+    private ArrayList inHand;
+    private boolean isInsured;
+    private boolean isDoubled;
+    private boolean isSplit;
+    
+    public Player(String name, int chip)
+    {
+        this.name = name;
+        this.chip = chip;
+        this.win = 0;
+        this.lose = 0;
+        this.push = 0;
+        this.isInsured = false;
+        this.isDoubled = false;
+        this.isSplit = false;
+        this.inHand = new ArrayList();
+        this.inHand.add(new ArrayList());
+    }
+    
+    public Player()
+    {
+        this.name = "Dealer";
+        this.chip = -1;
+        this.win = -1;
+        this.lose = -1;
+        this.push = -1;
+        this.isInsured = false;
+        this.isDoubled = false;
+        this.isSplit = false;
+        this.inHand = new ArrayList();
+        this.inHand.add(new ArrayList());
+    }
     
 }
