@@ -33,18 +33,18 @@ public class Game {
     private static Player dealer;
     private static Player player;
     private static Scanner keyboard;
-    private static int bet;
+    private static int[] bet;
     
     static
     {
         keyboard = new Scanner(System.in);
         dealer = new Player();
-        bet = 0;
+        bet = new int[2];
     }
     
-    public static int getBet()
+    public static int getBet(int whichBet)
 	{
-		return bet;
+		return bet[whichBet];
 	}
     
     public static void initPlayer()
@@ -65,7 +65,8 @@ public class Game {
     	dealer.getInHand().add(new ArrayList<Integer>());
         player.getInHand().clear();
         player.getInHand().add(new ArrayList<Integer>());
-    	bet = 0;
+    	bet[0] = 0;
+    	bet[1] = 0;
     	player.setDoubled(false);
     	player.setInsured(false);
     	player.setSplit(false);
@@ -82,7 +83,7 @@ public class Game {
     	while (true)
     	{
     		int tempBet = 0;
-    		System.out.println("Your current bet: " + bet);
+    		System.out.println("Your current bet: " + bet[0]);
     		System.out.println("Your current chips: " + player.getChip());
     		System.out.print("Please bet: ");
     		tempBet = keyboard.nextInt();
@@ -92,9 +93,9 @@ public class Game {
     		}
     		else
     		{
-				bet += tempBet;
+				bet[0] += tempBet;
 				player.setChip(player.getChip()-tempBet);
-				System.out.println("Your current bet: " + bet);
+				System.out.println("Your current bet: " + bet[0]);
 	    		System.out.println("Your current chips: " + player.getChip());
 	    		break;
 			}
@@ -147,36 +148,79 @@ public class Game {
     
     public static void insure()
     {
-    	System.out.println("Do you want to insure this hand? (Y/N): ");
-    	if (keyboard.nextLine().toUpperCase().charAt(0) == 'Y')
+    	System.out.println("\nDo you want to insure this hand? (Y/N): ");
+    	if (keyboard.next().toUpperCase().charAt(0) == 'Y')
     	{
-    		if (player.getChip() >= bet / 2)
+    		if (player.getChip() >= bet[0] / 2)
     		{
-    			player.setChip(player.getChip()-bet/2);
+    			player.setChip(player.getChip()-bet[0]/2);
     			player.setInsured(true);
-    			System.out.println("This hand is insured with " + bet/2 + " chips.");
-    			System.out.println("Your current bet: " + bet);
+    			System.out.println("This hand is insured with " + bet[0]/2 + " chips.");
+    			System.out.println("Your current bet: " + bet[0]);
     			System.out.println("Your current chips: " + player.getChip());
     		}
     		else
     		{
     			System.out.println("You don't have enough chips to insure this hand!");
-    			System.out.println("Your current bet: " + bet);
+    			System.out.println("Your current bet: " + bet[0]);
     			System.out.println("Your current chips: " + player.getChip());
     		}
     	}
     	else
     	{
     		System.out.println("You didn't insure this hand!");
-			System.out.println("Your current bet: " + bet);
+			System.out.println("Your current bet: " + bet[0]);
 			System.out.println("Your current chips: " + player.getChip());
 		}
+    }
+    
+    public static void split()
+    {
+    	System.out.println("\nDo you want to split this hand? (Y/N): ");
+    	if (keyboard.next().toUpperCase().charAt(0) == 'Y')
+    	{
+    		if (player.getChip() >= bet[0])
+    		{
+    			player.setChip(player.getChip()-bet[0]);
+    			bet[1] = bet[0];
+    			player.getInHand().add(new ArrayList<Integer>());
+    			player.getInHand().get(1).add(player.getInHand().get(0).get(1).intValue());
+    			player.getInHand().get(0).remove(1);
+    			player.getInHand().get(0).add(Card.dealCard());
+    			player.getInHand().get(1).add(Card.dealCard());
+    			System.out.println("You split this hand!");
+    			for (int i = 0; i < player.getInHand().size(); i++)
+    			{
+    				System.out.print("Your hand " + (i+1) + " cards: ");
+    				printCards(player, i);
+    				System.out.println("Your hand " + (i+1) + " point is " + totalValue(player, i));
+    				System.out.println("Your hand " + (i+1) + " bet is " + bet[i]);
+    			}
+    			System.out.println("Your current chips: " + player.getChip());
+    		}
+    		else
+    		{
+    			System.out.println("You don't have enough chips to split this hand!");
+    			System.out.println("Your current bet: " + bet[0]);
+    			System.out.println("Your current chips: " + player.getChip());
+			}
+    	}
+    	else
+    	{
+    		System.out.println("You didn't split this hand!");
+			System.out.println("Your current bet: " + bet[0]);
+			System.out.println("Your current chips: " + player.getChip());
+    	}
     }
     
     public static boolean gameEnd()
     {
     	boolean isEnd = false;
-    	
+    	System.out.println("\nDo you want to play another hand? (Y/N): ");
+    	if (keyboard.next().toUpperCase().charAt(0) == 'N')
+    	{
+    		isEnd = true;
+    	}
     	return isEnd;
     }
     
@@ -191,6 +235,7 @@ public class Game {
             System.out.println("2. Player status");
             System.out.println("3. Exit");
             System.out.println("*****************************");
+            System.out.print("Please select: ");
             while (true)
             {
                 menuSelect = keyboard.nextInt();
@@ -259,10 +304,48 @@ public class Game {
 						{
 							if (player.isInsured())
 							{
-								
+								player.setChip(player.getChip()+bet[0]);
+							}
+							player.addLose();
+							System.out.println("Dealer's cards: ");
+							printCards(dealer, 0);
+							System.out.println("Dealer's point is " + totalValue(dealer, 0));
+							System.out.println("Dealer has Blackjack!");
+							if (gameEnd())
+							{
+								break;
+							}
+							else
+							{
+								continue;
 							}
 						}
+                		else if (totalValue(dealer, 0) == 21 && totalValue(player, 0) == 21)
+                		{
+                			player.setChip(player.getChip()+bet[0]);
+                			player.addPush();
+                			System.out.println("Push!");
+                			if (gameEnd())
+							{
+								break;
+							}
+							else
+							{
+								continue;
+							}
+                		}
                 	}
+                	
+                	if (Card.getValue(player.getInHand().get(0).get(0).intValue()) == Card.getValue(player.getInHand().get(0).get(1).intValue()))
+                	{
+                		split();
+                	}
+                	
+                	if (gameEnd())
+                	{
+                		break;
+                	}
+                	continue;
                 }
             }
         }

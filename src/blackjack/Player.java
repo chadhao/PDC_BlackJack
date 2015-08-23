@@ -37,7 +37,7 @@ public class Player {
     private int push;
     private ArrayList<ArrayList<Integer>> inHand;
     private boolean isInsured;
-    private boolean isDoubled;
+    private boolean[] isDoubled;
     private boolean isSplit;
     
     public Player(String name, int chip)
@@ -48,7 +48,9 @@ public class Player {
         this.lose = 0;
         this.push = 0;
         this.isInsured = false;
-        this.isDoubled = false;
+        this.isDoubled = new boolean[2];
+        this.isDoubled[0] = false;
+        this.isDoubled[1] = false;
         this.isSplit = false;
         this.inHand = new ArrayList<ArrayList<Integer>>();
     }
@@ -61,15 +63,17 @@ public class Player {
         this.lose = -1;
         this.push = -1;
         this.isInsured = false;
-        this.isDoubled = false;
+        this.isDoubled = new boolean[2];
+        this.isDoubled[0] = false;
+        this.isDoubled[1] = false;
         this.isSplit = false;
         this.inHand = new ArrayList<ArrayList<Integer>>();
     }
     
     public String toString()
     {
-        return "Name: " + this.name + "\nChips: " + this.chip + "\nWin: " + this.win
-                + "\nLose: " + this.lose + "\nPush: " + this.push;
+        return "\nName: " + this.name + "\nChips: " + this.chip + "\nWin: " + this.win
+                + "\nLose: " + this.lose + "\nPush: " + this.push + "\n";
     }
     
     public String getName()
@@ -82,9 +86,9 @@ public class Player {
 		return this.inHand;
 	}
     
-    public boolean isDoubled()
+    public boolean isDoubled(int whichHand)
 	{
-		return this.isDoubled;
+		return this.isDoubled[whichHand];
 	}
     
     public boolean isInsured()
@@ -109,8 +113,14 @@ public class Player {
     
     public void setDoubled(boolean isDoubled)
 	{
-		this.isDoubled = isDoubled;
+		this.isDoubled[0] = isDoubled;
+		this.isDoubled[1] = isDoubled;
 	}
+    
+    public void setDoubled(int whichHand, boolean isDoubled)
+    {
+    	this.isDoubled[whichHand] = isDoubled;
+    }
     
     public void setInsured(boolean isInsured)
 	{
@@ -120,5 +130,20 @@ public class Player {
     public void setSplit(boolean isSplit)
 	{
 		this.isSplit = isSplit;
+	}
+    
+    public void addWin()
+	{
+		this.win++;
+	}
+    
+    public void addLose()
+	{
+		this.lose++;
+	}
+    
+    public void addPush()
+	{
+		this.push++;
 	}
 }
