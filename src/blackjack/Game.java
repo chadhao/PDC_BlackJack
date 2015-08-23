@@ -73,7 +73,7 @@ public class Game {
     	if (Card.getCardNow() > (52*Card.NUM_OF_SET*3/4))
     	{
     		Card.shuffleCards();
-    		System.out.println("<Shuffling cards...>");
+    		System.out.println("\n<Shuffling cards...>\n");
     	}
     }
     
@@ -145,6 +145,41 @@ public class Game {
     	return numOfAce;
     }
     
+    public static void insure()
+    {
+    	System.out.println("Do you want to insure this hand? (Y/N): ");
+    	if (keyboard.nextLine().toUpperCase().charAt(0) == 'Y')
+    	{
+    		if (player.getChip() >= bet / 2)
+    		{
+    			player.setChip(player.getChip()-bet/2);
+    			player.setInsured(true);
+    			System.out.println("This hand is insured with " + bet/2 + " chips.");
+    			System.out.println("Your current bet: " + bet);
+    			System.out.println("Your current chips: " + player.getChip());
+    		}
+    		else
+    		{
+    			System.out.println("You don't have enough chips to insure this hand!");
+    			System.out.println("Your current bet: " + bet);
+    			System.out.println("Your current chips: " + player.getChip());
+    		}
+    	}
+    	else
+    	{
+    		System.out.println("You didn't insure this hand!");
+			System.out.println("Your current bet: " + bet);
+			System.out.println("Your current chips: " + player.getChip());
+		}
+    }
+    
+    public static boolean gameEnd()
+    {
+    	boolean isEnd = false;
+    	
+    	return isEnd;
+    }
+    
     public static void gamePlay()
     {
         Card.shuffleCards();
@@ -206,7 +241,7 @@ public class Game {
                 	
                 	bet();
                 	
-                	System.out.println("<Dealing cards...>");
+                	System.out.println("\n<Dealing cards...>\n");
                 	dealer.getInHand().get(0).add(Card.dealCard());
                 	player.getInHand().get(0).add(Card.dealCard());
                 	dealer.getInHand().get(0).add(Card.dealCard());
@@ -217,7 +252,17 @@ public class Game {
                 	printCards(player, 0);
                 	System.out.println("Your point is " + totalValue(player, 0));
                 	
-                	
+                	if (Card.getValue(dealer.getInHand().get(0).get(0).intValue()) == 11)
+                	{
+                		insure();
+                		if (totalValue(dealer, 0) == 21 && totalValue(player, 0) < totalValue(dealer, 0))
+						{
+							if (player.isInsured())
+							{
+								
+							}
+						}
+                	}
                 }
             }
         }
