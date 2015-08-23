@@ -247,17 +247,12 @@ public class Game {
     		System.out.print("Your cards: ");
         	printCards(player, whichHand);
         	System.out.println("Your point is " + totalValue(player, whichHand));
-        	if (totalValue(player, whichHand) <= 21)
-        	{
-        		dealerGame();
-        	}
     	}
     }
     
     public static void stand()
     {
     	System.out.println("You stand this hand!");
-    	dealerGame();
     }
     
     public static void hit(int whichHand)
@@ -357,13 +352,11 @@ public class Game {
 	    			{
 	    				continue;
 	    			}
-	    			judge(whichHand);
 	    			break;
 	    		}
 	    		else if (menuSelect == 1)
 	    		{
 	    			stand();
-	    			judge(whichHand);
 	    			break;
 	    		}
 	    		else
@@ -371,8 +364,6 @@ public class Game {
 					hit(whichHand);
 					if (totalValue(player, whichHand) > 21)
 					{
-						player.addLose();
-						System.out.println("You busted!");
 						break;
 					}
 				}
@@ -518,10 +509,26 @@ public class Game {
                         	System.out.println("Your point is " + totalValue(player, i));
                 			roundPlay(i);
                 		}
+                		if (!(totalValue(player, 0) == 21 && player.getInHand().get(0).size() < 3) || !(totalValue(player, 1) == 21 && player.getInHand().get(1).size() < 3))
+                		{
+                			System.out.println("\n<Dealer's turn>");
+                			dealerGame();
+                		}
+                		for (int i = 0; i < player.getInHand().size(); i++)
+                		{
+                			System.out.println("<Hand " + (i+1) + ">");
+                			judge(i);
+                		}
                 	}
                 	else
                 	{
                 		roundPlay(0);
+                		if (!(totalValue(player, 0) == 21 && player.getInHand().get(0).size() < 3) || totalValue(player, 0) <= 21)
+                		{
+                			System.out.println("\n<Dealer's turn>");
+                			dealerGame();
+                		}
+                		judge(0);
                 	}
                 	
                 	if (gameEnd())
