@@ -54,7 +54,7 @@ public class Game {
         System.out.println("Welcome to Blackjack!");
         System.out.print("Tell me your name: ");
         name = keyboard.next();
-        System.out.print("How many chips do you hava: ");
+        System.out.print("How many chips do you want to buy: ");
         chip = keyboard.nextInt();
         Game.player = new Player(name, chip);
     }
@@ -148,7 +148,7 @@ public class Game {
     
     public static void insure()
     {
-    	System.out.println("\nDo you want to insure this hand? (Y/N): ");
+    	System.out.print("\nDo you want to insure this hand? (Y/N): ");
     	if (keyboard.next().toUpperCase().charAt(0) == 'Y')
     	{
     		if (player.getChip() >= bet[0] / 2)
@@ -176,7 +176,7 @@ public class Game {
     
     public static void split()
     {
-    	System.out.println("\nDo you want to split this hand? (Y/N): ");
+    	System.out.print("\nDo you want to split this hand? (Y/N): ");
     	if (keyboard.next().toUpperCase().charAt(0) == 'Y')
     	{
     		if (player.getChip() >= bet[0])
@@ -213,10 +213,177 @@ public class Game {
     	}
     }
     
+    public static void dealerGame()
+    {
+    	while (totalValue(dealer, 0) < 17)
+    	{
+    		System.out.print("Dealer's cards: ");
+    		printCards(dealer, 0);
+    		System.out.println("Dealer's point is " + totalValue(dealer, 0));
+    		System.out.println("\n<Dealing cards...>\n");
+    		try{Thread.sleep(1000);}catch(Exception e){}
+    		dealer.getInHand().get(0).add(Card.dealCard());
+    	}
+    	System.out.print("Dealer's cards: ");
+		printCards(dealer, 0);
+		System.out.println("Dealer's point is " + totalValue(dealer, 0));
+    }
+    
+    public static void doubledown(int whichHand)
+    {
+    	if (player.getChip() < bet[whichHand])
+    	{
+    		System.out.println("You don't have enough chips to double this hand!");
+    	}
+    	else
+    	{
+    		player.setChip(player.getChip() - bet[whichHand]);
+    		bet[whichHand] += bet[whichHand];
+    		System.out.println("You doubled this hand!");
+			System.out.println("Your current bet: " + bet[whichHand]);
+			System.out.println("Your current chips: " + player.getChip());
+    		System.out.println("\n<Dealing cards...>\n");
+    		player.getInHand().get(whichHand).add(Card.dealCard());
+    		System.out.print("Your cards: ");
+        	printCards(player, whichHand);
+        	System.out.println("Your point is " + totalValue(player, whichHand));
+        	if (totalValue(player, whichHand) <= 21)
+        	{
+        		dealerGame();
+        	}
+    	}
+    }
+    
+    public static void stand()
+    {
+    	System.out.println("You stand this hand!");
+    	dealerGame();
+    }
+    
+    public static void hit(int whichHand)
+    {
+    	System.out.println("\n<Dealing cards...>\n");
+		player.getInHand().get(whichHand).add(Card.dealCard());
+		System.out.print("Your cards: ");
+    	printCards(player, whichHand);
+    	System.out.println("Your point is " + totalValue(player, whichHand));
+    }
+    
+    public static void judge(int whichHand)
+    {
+    	if (totalValue(player, whichHand) > 21)
+		{
+			player.addLose();
+			System.out.println("You busted!");
+		}
+		else if (totalValue(dealer, 0) > 21)
+		{
+			player.addWin();
+			player.setChip(player.getChip() + bet[whichHand] * 2);
+			System.out.println("Dealer busted!");
+		}
+		else if (totalValue(player, whichHand) == totalValue(dealer, 0))
+		{
+			player.addPush();
+			player.setChip(player.getChip() + bet[whichHand]);
+			System.out.println("Push!");
+		}
+		else if (totalValue(player, whichHand) > totalValue(dealer, 0))
+		{
+			player.addWin();
+			player.setChip(player.getChip() + bet[whichHand] * 2);
+			System.out.println("You win!");
+		}
+		else
+		{
+			player.addLose();
+			System.out.println("You lose!");
+		}
+    }
+    
+    public static void roundPlay(int whichHand)
+    {
+    	int menuSelect;
+    	
+    	if (totalValue(player, whichHand) == 21 && totalValue(dealer, 0) != 21)
+    	{
+    		player.addWin();
+    		player.setChip((int)(player.getChip() + bet[whichHand] * 2.5));
+    		System.out.println("You hold Blackjack!");
+    		System.out.println("Your current chips: " + player.getChip());
+    	}
+    	else if (totalValue(player, whichHand) == 21 && totalValue(dealer, 0) == 21)
+    	{
+    		player.addPush();
+    		player.setChip(player.getChip() + bet[whichHand]);
+    		System.out.println("You and dealer both hold Blackjack!");
+    		System.out.println("Your current chips: " + player.getChip());
+    	}
+    	else
+    	{
+	    	while (true)
+	    	{
+	    		if (player.getInHand().get(whichHand).size() < 3)
+	    		{
+	    			System.out.println("\n1.Stand  2.Hit  3.Double");
+	    		}
+	    		else
+	    		{
+	    			System.out.println("\n1.Stand  2.Hit");
+	    		}
+	    		
+	    		while (true)
+	    		{
+	    			System.out.print("Please select: ");
+	    			menuSelect = keyboard.nextInt();
+	    			if (player.getInHand().get(whichHand).size() > 2 && (menuSelect > 2 || menuSelect < 1))
+	    			{
+	    				System.out.println("Please select from menu!");
+	    			}
+	    			else if (player.getInHand().get(whichHand).size() < 3 && (menuSelect > 3 || menuSelect < 1))
+	    			{
+	    				System.out.println("Please select from menu!");
+	    			}
+	    			else
+	    			{
+	    				break;	
+					}
+	    		}
+	    		
+	    		if (menuSelect == 3)
+	    		{
+	    			doubledown(whichHand);
+	    			if (player.getInHand().get(whichHand).size() < 3)
+	    			{
+	    				continue;
+	    			}
+	    			judge(whichHand);
+	    			break;
+	    		}
+	    		else if (menuSelect == 1)
+	    		{
+	    			stand();
+	    			judge(whichHand);
+	    			break;
+	    		}
+	    		else
+	    		{
+					hit(whichHand);
+					if (totalValue(player, whichHand) > 21)
+					{
+						player.addLose();
+						System.out.println("You busted!");
+						break;
+					}
+				}
+	    	}
+    	}
+    }
+    
     public static boolean gameEnd()
     {
     	boolean isEnd = false;
-    	System.out.println("\nDo you want to play another hand? (Y/N): ");
+    	System.out.print("\nDo you want to play another hand? (Y/N): ");
     	if (keyboard.next().toUpperCase().charAt(0) == 'N')
     	{
     		isEnd = true;
@@ -271,7 +438,7 @@ public class Game {
                 {
                     initPlayer();
                 }
-                System.out.println("Welcome " + player.getName() + "\nHave fun!\n\n");
+                System.out.println("Welcome " + player.getName() + "!\nHave fun!\n");
                 
                 while (true)
                 {
@@ -339,6 +506,22 @@ public class Game {
                 	if (Card.getValue(player.getInHand().get(0).get(0).intValue()) == Card.getValue(player.getInHand().get(0).get(1).intValue()))
                 	{
                 		split();
+                	}
+                	
+                	if (player.getInHand().size() > 1)
+                	{
+                		for (int i = 0; i < player.getInHand().size(); i++)
+                		{
+                			System.out.println("\n<Hand " + (i+1) + ">");
+                			System.out.print("Your cards: ");
+                        	printCards(player, i);
+                        	System.out.println("Your point is " + totalValue(player, i));
+                			roundPlay(i);
+                		}
+                	}
+                	else
+                	{
+                		roundPlay(0);
                 	}
                 	
                 	if (gameEnd())
