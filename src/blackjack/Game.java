@@ -33,12 +33,19 @@ public class Game {
     private static Player dealer;
     private static Player player;
     private static Scanner keyboard;
+    private static int bet;
     
     static
     {
         keyboard = new Scanner(System.in);
         dealer = new Player();
+        bet = 0;
     }
+    
+    public static int getBet()
+	{
+		return bet;
+	}
     
     public static void initPlayer()
     {
@@ -50,6 +57,92 @@ public class Game {
         System.out.print("How many chips do you hava: ");
         chip = keyboard.nextInt();
         Game.player = new Player(name, chip);
+    }
+    
+    public static void initRound()
+    {
+    	dealer.getInHand().clear();
+    	dealer.getInHand().add(new ArrayList<Integer>());
+        player.getInHand().clear();
+        player.getInHand().add(new ArrayList<Integer>());
+    	bet = 0;
+    	player.setDoubled(false);
+    	player.setInsured(false);
+    	player.setSplit(false);
+    	
+    	if (Card.getCardNow() > (52*Card.NUM_OF_SET*3/4))
+    	{
+    		Card.shuffleCards();
+    		System.out.println("<Shuffling cards...>");
+    	}
+    }
+    
+    public static void bet()
+    {
+    	while (true)
+    	{
+    		int tempBet = 0;
+    		System.out.println("Your current bet: " + bet);
+    		System.out.println("Your current chips: " + player.getChip());
+    		System.out.print("Please bet: ");
+    		tempBet = keyboard.nextInt();
+    		if (tempBet > player.getChip())
+    		{
+    			System.out.println("You don't have enough chips to bet!");
+    		}
+    		else
+    		{
+				bet += tempBet;
+				player.setChip(player.getChip()-tempBet);
+				System.out.println("Your current bet: " + bet);
+	    		System.out.println("Your current chips: " + player.getChip());
+	    		break;
+			}
+    	}
+    }
+    
+    public static void printCards(Player who, int whichHand)
+    {
+    	for (int i = 0; i < who.getInHand().get(whichHand).size(); i++)
+    	{
+    		System.out.print(Card.getCard(who.getInHand().get(whichHand).get(i).intValue()));
+    		if (i != who.getInHand().get(whichHand).size()-1)
+    		{
+    			System.out.print(", ");
+    		}
+    	}
+    	System.out.println("");
+    }
+    
+    public static int totalValue(Player who, int whichHand)
+    {
+    	int totalValue = 0;
+    	for (Integer integer: who.getInHand().get(whichHand))
+    	{
+    		totalValue += Card.getValue(integer.intValue());
+    	}
+    	if (getAce(who, whichHand) > 0)
+    	{
+    		totalValue -= (getAce(who, whichHand)-1) * 10;
+    		if (totalValue > 21)
+    		{
+    			totalValue -= 10;
+    		}
+    	}
+    	return totalValue;
+    }
+    
+    public static int getAce(Player who, int whichHand)
+    {
+    	int numOfAce = 0;
+    	for (Integer integer: who.getInHand().get(whichHand))
+    	{
+    		if (Card.getValue(integer.intValue()) == 11)
+    		{
+    			numOfAce++;
+    		}
+    	}
+    	return numOfAce;
     }
     
     public static void gamePlay()
@@ -79,25 +172,53 @@ public class Game {
             if (menuSelect == 3)
             {
                 System.out.println("Thanks for playing! Bye!");
+                break;
             }
             else if (menuSelect == 2)
             {
-                if (Game.player == null)
+                if (player == null)
                 {
                     System.out.println("No player record found!");
                 }
                 else
                 {
-                    System.out.println(Game.player);
+                    System.out.println(player);
                 }
             }
             else
             {
-                if (Game.player == null)
+                if (player == null)
                 {
-                    Game.initPlayer();
+                    initPlayer();
                 }
-                System.out.println("Welcome " + Game.player.getName() + "\nHave fun!\n\n");
+                System.out.println("Welcome " + player.getName() + "\nHave fun!\n\n");
+                
+                while (true)
+                {
+                	Game.initRound();
+                	
+                	if (player.getChip() <= 0)
+                	{
+                		System.out.println("You are penniless!");
+                		player = null;
+                		break;
+                	}
+                	
+                	bet();
+                	
+                	System.out.println("<Dealing cards...>");
+                	dealer.getInHand().get(0).add(Card.dealCard());
+                	player.getInHand().get(0).add(Card.dealCard());
+                	dealer.getInHand().get(0).add(Card.dealCard());
+                	player.getInHand().get(0).add(Card.dealCard());
+                	System.out.println("Dealer shows " + Card.getCard(dealer.getInHand().get(0).get(0).intValue()));
+                	System.out.println("Dealer's point is " + Card.getValue(dealer.getInHand().get(0).get(0).intValue()));
+                	System.out.print("Your cards: ");
+                	printCards(player, 0);
+                	System.out.println("Your point is " + totalValue(player, 0));
+                	
+                	
+                }
             }
         }
     }

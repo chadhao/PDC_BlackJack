@@ -3,7 +3,10 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/Users/Chad/Documents/workspace/java/PDC/Blackjack/src/blackjack/Blackjack.java</file>
+            <file>file:/Users/Chad/Documents/workspace/java/PDC/PDC_BlackJack/src/blackjack/Card.java</file>
+            <file>file:/Users/Chad/Documents/workspace/java/PDC/PDC_BlackJack/src/blackjack/Blackjack.java</file>
+            <file>file:/Users/Chad/Documents/workspace/java/PDC/PDC_BlackJack/src/blackjack/Player.java</file>
+            <file>file:/Users/Chad/Documents/workspace/java/PDC/PDC_BlackJack/src/blackjack/Game.java</file>
         </group>
     </open-files>
 </project-private>

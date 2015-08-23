@@ -35,7 +35,7 @@ public class Player {
     private int win;
     private int lose;
     private int push;
-    private ArrayList inHand;
+    private ArrayList<ArrayList<Integer>> inHand;
     private boolean isInsured;
     private boolean isDoubled;
     private boolean isSplit;
@@ -50,8 +50,7 @@ public class Player {
         this.isInsured = false;
         this.isDoubled = false;
         this.isSplit = false;
-        this.inHand = new ArrayList();
-        this.inHand.add(new ArrayList());
+        this.inHand = new ArrayList<ArrayList<Integer>>();
     }
     
     public Player()
@@ -64,8 +63,7 @@ public class Player {
         this.isInsured = false;
         this.isDoubled = false;
         this.isSplit = false;
-        this.inHand = new ArrayList();
-        this.inHand.add(new ArrayList());
+        this.inHand = new ArrayList<ArrayList<Integer>>();
     }
     
     public String toString()
@@ -78,4 +76,49 @@ public class Player {
     {
         return this.name;
     }
+    
+    public ArrayList<ArrayList<Integer>> getInHand()
+	{
+		return this.inHand;
+	}
+    
+    public boolean isDoubled()
+	{
+		return this.isDoubled;
+	}
+    
+    public boolean isInsured()
+	{
+		return this.isInsured;
+	}
+    
+    public boolean isSplit()
+	{
+		return this.isSplit;
+	}
+    
+    public int getChip()
+	{
+		return this.chip;
+	}
+    
+    public void setChip(int chip)
+	{
+		this.chip = chip;
+	}
+    
+    public void setDoubled(boolean isDoubled)
+	{
+		this.isDoubled = isDoubled;
+	}
+    
+    public void setInsured(boolean isInsured)
+	{
+		this.isInsured = isInsured;
+	}
+    
+    public void setSplit(boolean isSplit)
+	{
+		this.isSplit = isSplit;
+	}
 }

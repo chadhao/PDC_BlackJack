@@ -33,13 +33,7 @@ public class Blackjack {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        Card.shuffleCards();
-        for (int i = 0; i < 52*4; i++)
-        {
-            System.out.print(Card.getCard(i) + " ");
-            System.out.println(Card.getValue(i));
-        }
-        
+        Game.gamePlay();
     }
     
 }
