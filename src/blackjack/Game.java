@@ -133,7 +133,7 @@ public class Game {
     	return totalValue;
     }
     
-    public static int getAce(Player who, int whichHand)
+    private static int getAce(Player who, int whichHand)
     {
     	int numOfAce = 0;
     	for (Integer integer: who.getInHand().get(whichHand))
@@ -523,7 +523,7 @@ public class Game {
                 	else
                 	{
                 		roundPlay(0);
-                		if (!(totalValue(player, 0) == 21 && player.getInHand().get(0).size() < 3) || totalValue(player, 0) <= 21)
+                		if (!(totalValue(player, 0) == 21 && player.getInHand().get(0).size() < 3) && totalValue(player, 0) <= 21)
                 		{
                 			System.out.println("\n<Dealer's turn>");
                 			dealerGame();
