@@ -31,7 +31,7 @@ import java.util.*;
  */
 public class Card {
     public static final int NUM_OF_SET = 4;
-    private static final String[] SUIT = {"Spade", "Heart", "Club", "Diamond"};
+    private static final String[] SUIT = {"Spades", "Hearts", "Clubs", "Diamonds"};
     private static final String[] RANK = {"Two", "Three", "Four", "Five", "Six",
         "Seven", "Eight", "Nine", "Ten", "Jack", "Queen", "King", "Ace"};
     public static HashMap power = new HashMap();
